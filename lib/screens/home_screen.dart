@@ -19,6 +19,23 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   bool _sakuraPetalsEnabled = true;
+  bool _isSearchExpanded = false;
+  late final TextEditingController _searchController;
+  late final FocusNode _searchFocusNode;
+
+  @override
+  void initState() {
+    super.initState();
+    _searchController = TextEditingController();
+    _searchFocusNode = FocusNode();
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    _searchFocusNode.dispose();
+    super.dispose();
+  }
 
   String _getAnimeGreeting() {
     final hour = DateTime.now().hour;
@@ -52,7 +69,16 @@ class _HomeScreenState extends State<HomeScreen> {
             children: [
               // Top Anime Header
               _buildAnimeHeader(context, userLevel, expInLevel, completedCount,
-                  totalCount, isDark),
+                  totalCount, isDark, taskProvider),
+
+              // Expandable Search & Quick Sort Panel
+              AnimatedSize(
+                duration: const Duration(milliseconds: 280),
+                curve: Curves.easeInOutCubic,
+                child: _isSearchExpanded
+                    ? _buildSearchAndSortPanel(context, taskProvider, isDark)
+                    : const SizedBox.shrink(),
+              ),
 
               // Filter Chips
               _buildFilterChips(context, taskProvider, isDark),
@@ -60,7 +86,7 @@ class _HomeScreenState extends State<HomeScreen> {
               // Task List or Anime Empty State
               Expanded(
                 child: tasks.isEmpty
-                    ? _buildEmptyState(context, isDark)
+                    ? _buildEmptyState(context, isDark, taskProvider)
                     : ListView.builder(
                         padding: const EdgeInsets.only(top: 8, bottom: 90),
                         physics: const BouncingScrollPhysics(),
@@ -105,7 +131,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildAnimeHeader(BuildContext context, int level, double expProgress,
-      int completed, int total, bool isDark) {
+      int completed, int total, bool isDark, TaskProvider taskProvider) {
     return Container(
       padding: const EdgeInsets.fromLTRB(20, 12, 20, 16),
       decoration: BoxDecoration(
@@ -171,6 +197,51 @@ class _HomeScreenState extends State<HomeScreen> {
                 ],
               ),
               const Spacer(),
+
+              // Search & Filter Toggle Button
+              IconButton(
+                tooltip: _isSearchExpanded
+                    ? 'Hide Search & Sort'
+                    : 'Search & Sort Quests',
+                icon: Stack(
+                  clipBehavior: Clip.none,
+                  children: [
+                    Icon(
+                      _isSearchExpanded
+                          ? Icons.tune_rounded
+                          : Icons.search_rounded,
+                      color: _isSearchExpanded ||
+                              taskProvider.hasActiveSearchOrFilter
+                          ? AnimeColors.sakuraPink
+                          : (isDark ? Colors.white70 : Colors.black87),
+                      size: 22,
+                    ),
+                    if (taskProvider.hasActiveSearchOrFilter)
+                      Positioned(
+                        right: -2,
+                        top: -2,
+                        child: Container(
+                          width: 8,
+                          height: 8,
+                          decoration: const BoxDecoration(
+                            color: AnimeColors.starlightGold,
+                            shape: BoxShape.circle,
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+                onPressed: () {
+                  setState(() {
+                    _isSearchExpanded = !_isSearchExpanded;
+                    if (_isSearchExpanded) {
+                      _searchFocusNode.requestFocus();
+                    } else {
+                      _searchFocusNode.unfocus();
+                    }
+                  });
+                },
+              ),
 
               // Petals Toggle Button
               IconButton(
@@ -288,6 +359,327 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  Widget _buildSearchAndSortPanel(
+      BuildContext context, TaskProvider provider, bool isDark) {
+    final ranks = [
+      {'key': 'All', 'label': 'All Ranks', 'icon': '🛡️', 'color': AnimeColors.animeViolet},
+      {'key': 'High', 'label': 'S-Rank', 'icon': '🔥', 'color': AnimeColors.rankS},
+      {'key': 'Medium', 'label': 'A-Rank', 'icon': '⚡', 'color': AnimeColors.rankA},
+      {'key': 'Low', 'label': 'B-Rank', 'icon': '🍃', 'color': AnimeColors.rankB},
+    ];
+
+    final sortOptions = [
+      {'key': TaskSortOption.dueDate, 'label': 'Due Date', 'icon': '📅'},
+      {'key': TaskSortOption.priority, 'label': 'Rank', 'icon': '⚡'},
+      {'key': TaskSortOption.title, 'label': 'Title', 'icon': '🔤'},
+      {'key': TaskSortOption.createdAt, 'label': 'Created', 'icon': '🕒'},
+    ];
+
+    String sortDirectionLabel() {
+      switch (provider.sortBy) {
+        case TaskSortOption.dueDate:
+          return provider.sortAscending ? 'Soonest' : 'Furthest';
+        case TaskSortOption.priority:
+          return provider.sortAscending ? 'S → B' : 'B → S';
+        case TaskSortOption.title:
+          return provider.sortAscending ? 'A → Z' : 'Z → A';
+        case TaskSortOption.createdAt:
+          return provider.sortAscending ? 'Newest' : 'Oldest';
+      }
+    }
+
+    return Container(
+      margin: const EdgeInsets.fromLTRB(16, 6, 16, 6),
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: isDark ? AnimeColors.cardDark : Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: AnimeColors.sakuraPink.withAlpha(isDark ? 80 : 50),
+          width: 1.2,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: AnimeColors.sakuraPink.withAlpha(isDark ? 30 : 20),
+            blurRadius: 14,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // 1. Search Box
+          Container(
+            height: 44,
+            decoration: BoxDecoration(
+              color: isDark ? AnimeColors.cardDarkSurface : AnimeColors.sakuraSubtle,
+              borderRadius: BorderRadius.circular(14),
+              border: Border.all(
+                color: isDark ? Colors.white12 : Colors.black12,
+              ),
+            ),
+            child: TextField(
+              controller: _searchController,
+              focusNode: _searchFocusNode,
+              onChanged: (val) => provider.setSearchQuery(val),
+              style: TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
+                color: isDark ? AnimeColors.textMainDark : AnimeColors.textMainLight,
+              ),
+              decoration: InputDecoration(
+                border: InputBorder.none,
+                contentPadding: const EdgeInsets.symmetric(vertical: 12),
+                prefixIcon: const Icon(
+                  Icons.search_rounded,
+                  color: AnimeColors.sakuraPink,
+                  size: 20,
+                ),
+                hintText: 'Search quests by title, notes, subtasks... 🗡️',
+                hintStyle: TextStyle(
+                  fontSize: 12,
+                  color: isDark ? AnimeColors.textSubDark : AnimeColors.textSubLight,
+                ),
+                suffixIcon: _searchController.text.isNotEmpty
+                    ? IconButton(
+                        icon: const Icon(Icons.clear_rounded, size: 18),
+                        color: isDark ? Colors.white70 : Colors.black54,
+                        onPressed: () {
+                          _searchController.clear();
+                          provider.setSearchQuery('');
+                        },
+                      )
+                    : null,
+              ),
+            ),
+          ),
+
+          const SizedBox(height: 12),
+
+          // 2. Priority / Rank Filter Chips
+          Row(
+            children: [
+              const Text(
+                '⚔️ PRIORITY / RANK',
+                style: TextStyle(
+                  fontSize: 10,
+                  fontWeight: FontWeight.w900,
+                  letterSpacing: 0.8,
+                  color: AnimeColors.sakuraPink,
+                ),
+              ),
+              const Spacer(),
+              if (provider.filterPriority != 'All')
+                GestureDetector(
+                  onTap: () => provider.setFilterPriority('All'),
+                  child: const Text(
+                    'Reset Rank',
+                    style: TextStyle(
+                      fontSize: 10,
+                      fontWeight: FontWeight.w700,
+                      color: AnimeColors.starlightGold,
+                    ),
+                  ),
+                ),
+            ],
+          ),
+          const SizedBox(height: 6),
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            physics: const BouncingScrollPhysics(),
+            child: Row(
+              children: ranks.map((item) {
+                final isSelected = provider.filterPriority == item['key'];
+                final color = item['color'] as Color;
+                return Padding(
+                  padding: const EdgeInsets.only(right: 6),
+                  child: GestureDetector(
+                    onTap: () => provider.setFilterPriority(item['key'] as String),
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 180),
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                      decoration: BoxDecoration(
+                        color: isSelected
+                            ? color.withAlpha(isDark ? 70 : 40)
+                            : (isDark ? AnimeColors.cardDarkSurface : Colors.grey.withAlpha(20)),
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(
+                          color: isSelected ? color : Colors.transparent,
+                          width: 1.5,
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(item['icon'] as String, style: const TextStyle(fontSize: 11)),
+                          const SizedBox(width: 4),
+                          Text(
+                            item['label'] as String,
+                            style: TextStyle(
+                              fontSize: 11,
+                              fontWeight: isSelected ? FontWeight.w900 : FontWeight.w600,
+                              color: isSelected
+                                  ? (isDark ? Colors.white : color)
+                                  : (isDark ? Colors.white70 : Colors.black87),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              }).toList(),
+            ),
+          ),
+
+          const SizedBox(height: 12),
+
+          // 3. Quick Sort Options & Direction Toggle
+          Row(
+            children: [
+              const Text(
+                '⚡ SORT BY',
+                style: TextStyle(
+                  fontSize: 10,
+                  fontWeight: FontWeight.w900,
+                  letterSpacing: 0.8,
+                  color: AnimeColors.animeViolet,
+                ),
+              ),
+              const Spacer(),
+              // Direction toggle button
+              GestureDetector(
+                onTap: () => provider.toggleSortDirection(),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                  decoration: BoxDecoration(
+                    color: AnimeColors.animeViolet.withAlpha(isDark ? 50 : 25),
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(
+                      color: AnimeColors.animeViolet.withAlpha(80),
+                      width: 1,
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        provider.sortAscending
+                            ? Icons.arrow_upward_rounded
+                            : Icons.arrow_downward_rounded,
+                        size: 13,
+                        color: AnimeColors.animeViolet,
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        sortDirectionLabel(),
+                        style: const TextStyle(
+                          fontSize: 10,
+                          fontWeight: FontWeight.w800,
+                          color: AnimeColors.animeViolet,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 6),
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            physics: const BouncingScrollPhysics(),
+            child: Row(
+              children: sortOptions.map((item) {
+                final isSelected = provider.sortBy == item['key'];
+                return Padding(
+                  padding: const EdgeInsets.only(right: 6),
+                  child: GestureDetector(
+                    onTap: () => provider.setSortOption(item['key'] as TaskSortOption),
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 180),
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                      decoration: BoxDecoration(
+                        color: isSelected
+                            ? AnimeColors.animeViolet.withAlpha(isDark ? 70 : 35)
+                            : (isDark ? AnimeColors.cardDarkSurface : Colors.grey.withAlpha(20)),
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(
+                          color: isSelected ? AnimeColors.animeViolet : Colors.transparent,
+                          width: 1.5,
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(item['icon'] as String, style: const TextStyle(fontSize: 11)),
+                          const SizedBox(width: 4),
+                          Text(
+                            item['label'] as String,
+                            style: TextStyle(
+                              fontSize: 11,
+                              fontWeight: isSelected ? FontWeight.w900 : FontWeight.w600,
+                              color: isSelected
+                                  ? (isDark ? Colors.white : AnimeColors.animeViolet)
+                                  : (isDark ? Colors.white70 : Colors.black87),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              }).toList(),
+            ),
+          ),
+
+          // 4. Quick Reset Bar (if any filter or search active)
+          if (provider.hasActiveSearchOrFilter) ...[
+            const SizedBox(height: 10),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+              decoration: BoxDecoration(
+                color: AnimeColors.starlightGold.withAlpha(isDark ? 30 : 25),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Row(
+                children: [
+                  const Text('✨', style: TextStyle(fontSize: 12)),
+                  const SizedBox(width: 6),
+                  Expanded(
+                    child: Text(
+                      'Showing ${provider.tasks.length} of ${provider.allTasks.length} quests',
+                      style: TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w700,
+                        color: isDark ? AnimeColors.textMainDark : AnimeColors.textMainLight,
+                      ),
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      _searchController.clear();
+                      provider.clearSearchAndFilters();
+                    },
+                    child: const Text(
+                      'Clear All 🔄',
+                      style: TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w900,
+                        color: AnimeColors.sakuraPink,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
   Widget _buildFilterChips(
       BuildContext context, TaskProvider provider, bool isDark) {
     final statuses = [
@@ -297,7 +689,7 @@ class _HomeScreenState extends State<HomeScreen> {
     ];
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
       child: Row(
         children: statuses.map((item) {
           final isSelected = provider.filterStatus == item['key'];
@@ -357,24 +749,30 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildEmptyState(BuildContext context, bool isDark) {
+  Widget _buildEmptyState(
+      BuildContext context, bool isDark, TaskProvider provider) {
+    final bool isSearchFilterEmpty =
+        provider.allTasks.isNotEmpty && provider.tasks.isEmpty;
+
     return Center(
       child: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 32),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const AnimeChibiMascot(
+            AnimeChibiMascot(
               size: 130,
-              mood: 'sleeping',
+              mood: isSearchFilterEmpty ? 'quest' : 'sleeping',
             ),
             const SizedBox(height: 16),
             ShaderMask(
               shaderCallback: (bounds) =>
                   AnimeColors.mysticVioletGradient.createShader(bounds),
-              child: const Text(
-                'クエストなし • No Quests Active!',
-                style: TextStyle(
+              child: Text(
+                isSearchFilterEmpty
+                    ? '該当なし • No Quests Matched!'
+                    : 'クエストなし • No Quests Active!',
+                style: const TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w900,
                   color: Colors.white,
@@ -383,7 +781,9 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             const SizedBox(height: 8),
             Text(
-              'Your mission board is currently clear.\nSummon a new quest to begin your adventure! ✨',
+              isSearchFilterEmpty
+                  ? 'No quests match your current search query or rank filter.\nTry adjusting your filters or resetting them! 🔍'
+                  : 'Your mission board is currently clear.\nSummon a new quest to begin your adventure! ✨',
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 13,
@@ -392,27 +792,50 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
             const SizedBox(height: 20),
-            ElevatedButton.icon(
-              onPressed: () => Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => const AddTaskScreen()),
-              ),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AnimeColors.sakuraPink,
-                foregroundColor: Colors.white,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
+            if (isSearchFilterEmpty)
+              ElevatedButton.icon(
+                onPressed: () {
+                  _searchController.clear();
+                  provider.clearSearchAndFilters();
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AnimeColors.animeViolet,
+                  foregroundColor: Colors.white,
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  elevation: 4,
                 ),
-                elevation: 4,
+                icon: const Icon(Icons.refresh_rounded, size: 18),
+                label: const Text(
+                  'Reset Filters 🔄',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+              )
+            else
+              ElevatedButton.icon(
+                onPressed: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const AddTaskScreen()),
+                ),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AnimeColors.sakuraPink,
+                  foregroundColor: Colors.white,
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  elevation: 4,
+                ),
+                icon: const Icon(Icons.add, size: 18),
+                label: const Text(
+                  'Summon Quest ✨',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
               ),
-              icon: const Icon(Icons.add, size: 18),
-              label: const Text(
-                'Summon Quest ✨',
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-            ),
           ],
         ),
       ),

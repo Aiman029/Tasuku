@@ -4,6 +4,13 @@ import '../models/task_model.dart';
 import '../services/database_service.dart';
 import '../services/notification_service.dart';
 
+enum TaskSortOption {
+  dueDate,
+  priority,
+  title,
+  createdAt,
+}
+
 class TaskProvider extends ChangeNotifier {
   final DatabaseService _dbService = DatabaseService();
   final NotificationService _notificationService = NotificationService();
@@ -12,11 +19,27 @@ class TaskProvider extends ChangeNotifier {
   List<TaskModel> _tasks = [];
   String _filterStatus = 'All'; // "All", "Completed", "Pending"
   String _filterCategory = 'All';
+  String _searchQuery = '';
+  String _filterPriority = 'All'; // "All", "High", "Medium", "Low"
+  TaskSortOption _sortBy = TaskSortOption.dueDate;
+  bool _sortAscending = true;
 
   List<TaskModel> get tasks => _filteredTasks();
   List<TaskModel> get allTasks => _tasks;
   String get filterStatus => _filterStatus;
   String get filterCategory => _filterCategory;
+  String get searchQuery => _searchQuery;
+  String get filterPriority => _filterPriority;
+  TaskSortOption get sortBy => _sortBy;
+  bool get sortAscending => _sortAscending;
+
+  bool get hasActiveSearchOrFilter =>
+      _searchQuery.trim().isNotEmpty ||
+      _filterPriority != 'All' ||
+      _filterStatus != 'All' ||
+      _filterCategory != 'All' ||
+      _sortBy != TaskSortOption.dueDate ||
+      !_sortAscending;
 
   // Panggil sekali masa app start (contoh: initState di home_screen)
   void loadTasks() {
@@ -27,17 +50,78 @@ class TaskProvider extends ChangeNotifier {
   }
 
   List<TaskModel> _filteredTasks() {
-    var result = _tasks;
+    var result = List<TaskModel>.from(_tasks);
 
+    // 1. Status Filter
     if (_filterStatus == 'Completed') {
       result = result.where((t) => t.isDone).toList();
     } else if (_filterStatus == 'Pending') {
       result = result.where((t) => !t.isDone).toList();
     }
 
+    // 2. Category Filter
     if (_filterCategory != 'All') {
       result = result.where((t) => t.category == _filterCategory).toList();
     }
+
+    // 3. Priority / Rank Filter
+    if (_filterPriority != 'All') {
+      result = result.where((t) =>
+          t.priority.toLowerCase() == _filterPriority.toLowerCase()).toList();
+    }
+
+    // 4. Keyword Search Filter (Title, description, category, subtask items)
+    if (_searchQuery.trim().isNotEmpty) {
+      final q = _searchQuery.trim().toLowerCase();
+      result = result.where((t) {
+        final titleMatch = t.title.toLowerCase().contains(q);
+        final descMatch = t.description.toLowerCase().contains(q);
+        final catMatch = t.category.toLowerCase().contains(q);
+        final subtaskMatch =
+            t.subtasks.any((s) => s.title.toLowerCase().contains(q));
+        return titleMatch || descMatch || catMatch || subtaskMatch;
+      }).toList();
+    }
+
+    // 5. Sorting
+    result.sort((a, b) {
+      int cmp = 0;
+      switch (_sortBy) {
+        case TaskSortOption.dueDate:
+          cmp = a.dueDate.compareTo(b.dueDate);
+          break;
+        case TaskSortOption.priority:
+          int weight(String p) {
+            switch (p.toLowerCase()) {
+              case 'high':
+              case 's':
+              case 's-rank':
+                return 3;
+              case 'medium':
+              case 'a':
+              case 'a-rank':
+                return 2;
+              case 'low':
+              case 'b':
+              case 'b-rank':
+                return 1;
+              default:
+                return 0;
+            }
+          }
+          // Default ascending for priority means S-Rank (Highest) first
+          cmp = weight(b.priority).compareTo(weight(a.priority));
+          break;
+        case TaskSortOption.title:
+          cmp = a.title.toLowerCase().compareTo(b.title.toLowerCase());
+          break;
+        case TaskSortOption.createdAt:
+          // Default ascending for created at means newest first
+          cmp = b.createdAt.compareTo(a.createdAt);
+          break;
+      }
+      return _sortAscending ? cmp : -cmp;
+    });
 
     return result;
   }
@@ -49,6 +133,41 @@ class TaskProvider extends ChangeNotifier {
 
   void setFilterCategory(String category) {
     _filterCategory = category;
+    notifyListeners();
+  }
+
+  void setSearchQuery(String query) {
+    _searchQuery = query;
+    notifyListeners();
+  }
+
+  void setFilterPriority(String priority) {
+    _filterPriority = priority;
+    notifyListeners();
+  }
+
+  void setSortOption(TaskSortOption option) {
+    if (_sortBy == option) {
+      _sortAscending = !_sortAscending;
+    } else {
+      _sortBy = option;
+      _sortAscending = true;
+    }
+    notifyListeners();
+  }
+
+  void toggleSortDirection() {
+    _sortAscending = !_sortAscending;
+    notifyListeners();
+  }
+
+  void clearSearchAndFilters() {
+    _searchQuery = '';
+    _filterPriority = 'All';
+    _filterCategory = 'All';
+    _filterStatus = 'All';
+    _sortBy = TaskSortOption.dueDate;
+    _sortAscending = true;
     notifyListeners();
   }
 
