@@ -208,7 +208,7 @@ class CalendarScreen extends StatelessWidget {
                   : ListView.builder(
                       itemCount: tasksForSelectedDay.length,
                       physics: const BouncingScrollPhysics(),
-                      padding: const EdgeInsets.only(bottom: 24),
+                      padding: const EdgeInsets.only(bottom: 110),
                       itemBuilder: (context, index) {
                         final task = tasksForSelectedDay[index];
                         return TaskTile(

@@ -5,6 +5,7 @@ import 'services/database_service.dart';
 import 'services/notification_service.dart';
 import 'providers/task_provider.dart';
 import 'providers/calendar_provider.dart';
+import 'providers/navigation_provider.dart';
 import 'screens/splash_screen.dart';
 import 'theme/anime_theme.dart';
 
@@ -27,6 +28,7 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => TaskProvider()..loadTasks()),
         ChangeNotifierProvider(create: (_) => CalendarProvider()),
+        ChangeNotifierProvider(create: (_) => NavigationProvider()),
       ],
       child: MaterialApp(
         title: 'TASUKU - Anime Quest Planner',

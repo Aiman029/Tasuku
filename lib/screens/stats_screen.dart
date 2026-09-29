@@ -383,7 +383,7 @@ class _StatsScreenState extends State<StatsScreen>
     required List<TaskModel> completedTasks,
   }) {
     return ListView(
-      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
+      padding: const EdgeInsets.fromLTRB(18, 14, 18, 110),
       physics: const BouncingScrollPhysics(),
       children: [
         // 1. Adventurer Character Card
@@ -1033,7 +1033,7 @@ class _StatsScreenState extends State<StatsScreen>
     final categoryIcons = {'General': '🌸', 'Study': '📚', 'Work': '💼', 'Personal': '🍜', 'Gaming': '🎮'};
 
     return ListView(
-      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
+      padding: const EdgeInsets.fromLTRB(18, 14, 18, 110),
       physics: const BouncingScrollPhysics(),
       children: [
         // 1. Weekly Activity Bar Chart

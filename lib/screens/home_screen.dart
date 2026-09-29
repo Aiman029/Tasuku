@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../providers/navigation_provider.dart';
 import '../providers/task_provider.dart';
 import '../theme/anime_theme.dart';
 import '../widgets/task_tile.dart';
@@ -7,8 +8,7 @@ import '../widgets/sakura_particles.dart';
 import '../widgets/anime_mascot.dart';
 import 'add_task_screen.dart';
 import 'task_detail_screen.dart';
-import 'calendar_screen.dart';
-import 'stats_screen.dart';
+
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -88,7 +88,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: tasks.isEmpty
                     ? _buildEmptyState(context, isDark, taskProvider)
                     : ListView.builder(
-                        padding: const EdgeInsets.only(top: 8, bottom: 90),
+                        padding: const EdgeInsets.only(top: 8, bottom: 130),
                         physics: const BouncingScrollPhysics(),
                         itemCount: tasks.length,
                         itemBuilder: (context, index) {
@@ -259,26 +259,20 @@ class _HomeScreenState extends State<HomeScreen> {
                 },
               ),
 
-              // Calendar Button
+              // Calendar Button (switches to Calendar tab in floating island)
               IconButton(
                 tooltip: 'Calendar View',
                 icon: const Icon(Icons.calendar_month_outlined),
                 color: AnimeColors.animeViolet,
-                onPressed: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => const CalendarScreen()),
-                ),
+                onPressed: () => context.read<NavigationProvider>().setIndex(1),
               ),
 
-              // Guild Stats Button
+              // Guild Stats Button (switches to Stats tab in floating island)
               IconButton(
                 tooltip: 'Adventurer Guild Stats',
                 icon: const Icon(Icons.insights_rounded),
                 color: AnimeColors.sakuraPink,
-                onPressed: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => const StatsScreen()),
-                ),
+                onPressed: () => context.read<NavigationProvider>().setIndex(3),
               ),
             ],
           ),
@@ -844,6 +838,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _buildAnimeFAB(BuildContext context) {
     return Container(
+      margin: const EdgeInsets.only(bottom: 74),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(22),
         gradient: AnimeColors.sakuraGradient,

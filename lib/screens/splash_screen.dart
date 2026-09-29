@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../theme/anime_theme.dart';
 import '../widgets/sakura_particles.dart';
 import '../widgets/anime_mascot.dart';
-import 'home_screen.dart';
+import 'main_navigation_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -80,7 +80,7 @@ class _SplashScreenState extends State<SplashScreen>
       PageRouteBuilder(
         transitionDuration: const Duration(milliseconds: 700),
         pageBuilder: (context, animation, secondaryAnimation) =>
-            const HomeScreen(),
+            const MainNavigationScreen(),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           final curved = CurvedAnimation(
             parent: animation,
