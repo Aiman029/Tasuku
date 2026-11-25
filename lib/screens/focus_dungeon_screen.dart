@@ -328,27 +328,23 @@ class _FocusDungeonScreenState extends State<FocusDungeonScreen>
           padding: const EdgeInsets.fromLTRB(16, 8, 16, 110),
           child: Column(
             children: [
-              // Mode Selector Tabs
+
               _buildModeSelector(isDark),
 
               const SizedBox(height: 24),
 
-              // Circular Countdown Gauge
               _buildTimerGauge(progress, isDark),
 
               const SizedBox(height: 24),
 
-              // Interactive Action Controls
               _buildTimerControls(isDark),
 
               const SizedBox(height: 24),
 
-              // Anime Mascot Speech Bubble
               _buildMascotCard(isDark),
 
               const SizedBox(height: 20),
 
-              // Dungeon Daily Performance Metrics
               _buildPerformanceCard(isDark),
             ],
           ),
@@ -413,7 +409,7 @@ class _FocusDungeonScreenState extends State<FocusDungeonScreen>
           child: Stack(
             alignment: Alignment.center,
             children: [
-              // Outer Glowing Aura Ring
+
               Container(
                 width: 240,
                 height: 240,
@@ -430,7 +426,6 @@ class _FocusDungeonScreenState extends State<FocusDungeonScreen>
                 ),
               ),
 
-              // Animated Gauge Painter
               CustomPaint(
                 size: const Size(230, 230),
                 painter: _DungeonGaugePainter(
@@ -440,7 +435,6 @@ class _FocusDungeonScreenState extends State<FocusDungeonScreen>
                 ),
               ),
 
-              // Center Content
               Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -499,7 +493,7 @@ class _FocusDungeonScreenState extends State<FocusDungeonScreen>
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        // Reset Button
+
         IconButton.filledTonal(
           iconSize: 24,
           tooltip: 'Reset Chamber Timer',
@@ -515,7 +509,6 @@ class _FocusDungeonScreenState extends State<FocusDungeonScreen>
 
         const SizedBox(width: 20),
 
-        // Start / Pause Big Button
         Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(30),
@@ -567,7 +560,6 @@ class _FocusDungeonScreenState extends State<FocusDungeonScreen>
 
         const SizedBox(width: 20),
 
-        // Skip to end button
         IconButton.filledTonal(
           iconSize: 24,
           tooltip: 'Complete / Skip Session',
@@ -765,7 +757,6 @@ class _DungeonGaugePainter extends CustomPainter {
     final center = Offset(size.width / 2, size.height / 2);
     final radius = (size.width - 24) / 2;
 
-    // Track
     final trackPaint = Paint()
       ..color = trackColor
       ..style = PaintingStyle.stroke
@@ -776,7 +767,6 @@ class _DungeonGaugePainter extends CustomPainter {
 
     if (progress <= 0) return;
 
-    // Progress Arc with Gradient
     final sweepAngle = 2 * math.pi * progress.clamp(0.0, 1.0);
     const startAngle = -math.pi / 2;
 

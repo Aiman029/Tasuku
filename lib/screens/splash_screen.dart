@@ -113,7 +113,7 @@ class _SplashScreenState extends State<SplashScreen>
 
     return Scaffold(
       body: GestureDetector(
-        onTap: _goToHome, // Tap anywhere to skip
+        onTap: _goToHome,
         child: SakuraPetalsOverlay(
           petalCount: 24,
           child: Container(
@@ -143,7 +143,7 @@ class _SplashScreenState extends State<SplashScreen>
             child: SafeArea(
               child: Stack(
                 children: [
-                  // Skip button in top corner
+
                   Positioned(
                     top: 16,
                     right: 16,
@@ -172,14 +172,12 @@ class _SplashScreenState extends State<SplashScreen>
                     ),
                   ),
 
-                  // Center Content
                   Center(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         const Spacer(flex: 3),
 
-                        // Animated Glowing Anime Crest / Mascot
                         ScaleTransition(
                           scale: _scaleAnimation,
                           child: ScaleTransition(
@@ -190,7 +188,6 @@ class _SplashScreenState extends State<SplashScreen>
 
                         const SizedBox(height: 28),
 
-                        // Title with Anime Japanese Script & Subtitle
                         FadeTransition(
                           opacity: _fadeAnimation,
                           child: Column(
@@ -253,7 +250,6 @@ class _SplashScreenState extends State<SplashScreen>
 
                         const Spacer(flex: 2),
 
-                        // Animated Quote Carousel
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 36),
                           child: AnimatedSwitcher(
@@ -289,7 +285,6 @@ class _SplashScreenState extends State<SplashScreen>
 
                         const SizedBox(height: 24),
 
-                        // Sleek Glowing Progress Bar
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 60),
                           child: ClipRRect(

@@ -142,7 +142,7 @@ class _TaskTileState extends State<TaskTile>
                     const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
                 child: Row(
                   children: [
-                    // Anime Checkmark Button with pulse/sparkle
+
                     GestureDetector(
                       onTap: () {
                         widget.onToggle();
@@ -202,12 +202,11 @@ class _TaskTileState extends State<TaskTile>
 
                     const SizedBox(width: 12),
 
-                    // Main Task Details
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          // Rank & Category chips row
+
                           Row(
                             children: [
                               Container(
@@ -280,7 +279,6 @@ class _TaskTileState extends State<TaskTile>
 
                           const SizedBox(height: 6),
 
-                          // Title
                           Text(
                             widget.task.title,
                             style: TextStyle(
@@ -302,7 +300,6 @@ class _TaskTileState extends State<TaskTile>
 
                           const SizedBox(height: 6),
 
-                          // Due Date with Anime Badges
                           Row(
                             children: [
                               Icon(
@@ -336,7 +333,6 @@ class _TaskTileState extends State<TaskTile>
                           ],
                         ),
 
-                        // Checkpoint Steps Indicator
                         if (widget.task.totalSubtasks > 0) ...[
                           const SizedBox(height: 6),
                           Row(

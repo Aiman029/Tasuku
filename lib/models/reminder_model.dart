@@ -5,7 +5,7 @@ part 'reminder_model.g.dart';
 @HiveType(typeId: 1)
 class ReminderModel extends HiveObject {
   @HiveField(0)
-  String taskId; // rujuk balik ke TaskModel.id
+  String taskId;
 
   @HiveField(1)
   DateTime scheduledTime;
@@ -14,10 +14,10 @@ class ReminderModel extends HiveObject {
   bool isRepeating;
 
   @HiveField(3)
-  String repeatType; // "None", "Daily", "Weekly"
+  String repeatType;
 
   @HiveField(4)
-  bool isActive; // untuk cancel/disable reminder tanpa delete
+  bool isActive;
 
   ReminderModel({
     required this.taskId,

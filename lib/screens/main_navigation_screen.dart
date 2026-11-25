@@ -17,7 +17,7 @@ class MainNavigationScreen extends StatelessWidget {
     return Scaffold(
       body: Stack(
         children: [
-          // IndexedStack preserves state across Quests, Calendar, Dungeon and Stats
+
           IndexedStack(
             index: navProvider.currentIndex,
             children: const [
@@ -28,7 +28,6 @@ class MainNavigationScreen extends StatelessWidget {
             ],
           ),
 
-          // Modern Curved Floating Island Navigation Dock
           const Positioned(
             left: 0,
             right: 0,

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest.dart' as tz_data;
@@ -11,8 +12,8 @@ class NotificationService {
   final FlutterLocalNotificationsPlugin _notifications =
       FlutterLocalNotificationsPlugin();
 
-  // Panggil sekali dalam main.dart lepas Hive init
   Future<void> init() async {
+    if (kIsWeb) return;
     tz_data.initializeTimeZones();
 
     const androidSettings =
@@ -30,25 +31,23 @@ class NotificationService {
 
     await _notifications.initialize(initSettings);
 
-    // Android 13+ perlu minta permission runtime
     await _notifications
         .resolvePlatformSpecificImplementation<
             AndroidFlutterLocalNotificationsPlugin>()
         ?.requestNotificationsPermission();
   }
 
-  // Schedule reminder berdasarkan task.reminderTime
   Future<void> scheduleReminder(TaskModel task) async {
+    if (kIsWeb) return;
     if (task.reminderTime == null) return;
 
-    // Skip kalau masa reminder dah lepas
     if (task.reminderTime!.isBefore(DateTime.now())) return;
 
     final scheduledDate = tz.TZDateTime.from(task.reminderTime!, tz.local);
 
     const androidDetails = AndroidNotificationDetails(
-      'task_reminders', // channel id
-      'Task Reminders', // channel name
+      'task_reminders',
+      'Task Reminders',
       channelDescription: 'Reminder untuk tugasan anda',
       importance: Importance.high,
       priority: Priority.high,
@@ -60,7 +59,6 @@ class NotificationService {
       iOS: iosDetails,
     );
 
-    // id notification guna hashCode dari task.id (mesti int & unique)
     final notificationId = task.id.hashCode;
 
     await _notifications.zonedSchedule(
@@ -75,12 +73,13 @@ class NotificationService {
     );
   }
 
-  // Cancel reminder (bila task delete atau reminder di-update)
   Future<void> cancelReminder(String taskId) async {
+    if (kIsWeb) return;
     await _notifications.cancel(taskId.hashCode);
   }
 
   Future<void> cancelAll() async {
+    if (kIsWeb) return;
     await _notifications.cancelAll();
   }
 }

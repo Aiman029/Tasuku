@@ -213,8 +213,6 @@ class _StatsScreenState extends State<StatsScreen>
     final rate = totalCount > 0 ? (completedCount / totalCount) : 0.0;
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    // Calculate RPG EXP:
-    // S-Rank = 100 EXP, A-Rank = 50 EXP, B-Rank = 25 EXP
     int totalExp = 0;
     int sRankCompleted = 0;
     int aRankCompleted = 0;
@@ -234,7 +232,6 @@ class _StatsScreenState extends State<StatsScreen>
       }
     }
 
-    // Level formula: 150 EXP per level
     final userLevel = (totalExp ~/ 150) + 1;
     final currentLevelExp = totalExp % 150;
     final levelProgress = currentLevelExp / 150.0;
@@ -330,7 +327,7 @@ class _StatsScreenState extends State<StatsScreen>
         child: TabBarView(
           controller: _tabController,
           children: [
-            // TAB 1: Guild Status & RPG Attributes
+
             _buildGuildStatusTab(
               context,
               userLevel: userLevel,
@@ -349,7 +346,6 @@ class _StatsScreenState extends State<StatsScreen>
               completedTasks: completedTasks,
             ),
 
-            // TAB 2: Weekly Activity & Category Breakdown
             _buildWeeklyAnalyticsTab(
               context,
               allTasks: allTasks,
@@ -362,9 +358,6 @@ class _StatsScreenState extends State<StatsScreen>
     );
   }
 
-  // ==========================================
-  // TAB 1: GUILD STATUS & RPG ATTRIBUTES
-  // ==========================================
   Widget _buildGuildStatusTab(
     BuildContext context, {
     required int userLevel,
@@ -386,7 +379,7 @@ class _StatsScreenState extends State<StatsScreen>
       padding: const EdgeInsets.fromLTRB(18, 14, 18, 110),
       physics: const BouncingScrollPhysics(),
       children: [
-        // 1. Adventurer Character Card
+
         Container(
           padding: const EdgeInsets.all(18),
           decoration: BoxDecoration(
@@ -497,7 +490,6 @@ class _StatsScreenState extends State<StatsScreen>
               ),
               const SizedBox(height: 14),
 
-              // Level EXP Bar
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -548,7 +540,6 @@ class _StatsScreenState extends State<StatsScreen>
 
         const SizedBox(height: 16),
 
-        // 2. Glowing Completion Rate Card with Donut Chart
         Container(
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
@@ -590,7 +581,6 @@ class _StatsScreenState extends State<StatsScreen>
               ),
               const SizedBox(height: 20),
 
-              // Donut Chart
               SizedBox(
                 height: 190,
                 child: totalCount == 0
@@ -676,7 +666,6 @@ class _StatsScreenState extends State<StatsScreen>
 
               const SizedBox(height: 18),
 
-              // Legend
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
@@ -692,7 +681,6 @@ class _StatsScreenState extends State<StatsScreen>
 
         const SizedBox(height: 16),
 
-        // 3. Anime RPG Combat Attributes Card
         Container(
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
@@ -720,7 +708,6 @@ class _StatsScreenState extends State<StatsScreen>
               ),
               const SizedBox(height: 16),
 
-              // Discipline (Completion Rate)
               _buildAttributeBar(
                 title: 'Discipline (律)',
                 icon: '🛡️',
@@ -736,7 +723,6 @@ class _StatsScreenState extends State<StatsScreen>
               ),
               const SizedBox(height: 12),
 
-              // Power (High difficulty S-Ranks)
               _buildAttributeBar(
                 title: 'Power (力)',
                 icon: '🔥',
@@ -753,7 +739,6 @@ class _StatsScreenState extends State<StatsScreen>
               ),
               const SizedBox(height: 12),
 
-              // Focus / Wisdom (Study & Work tasks)
               _buildAttributeBar(
                 title: 'Wisdom & Focus (智)',
                 icon: '📚',
@@ -776,7 +761,6 @@ class _StatsScreenState extends State<StatsScreen>
               ),
               const SizedBox(height: 12),
 
-              // Stamina (Total quests completed)
               _buildAttributeBar(
                 title: 'Stamina (気)',
                 icon: '⚔️',
@@ -796,7 +780,6 @@ class _StatsScreenState extends State<StatsScreen>
 
         const SizedBox(height: 16),
 
-        // 4. Hunter Badges Showcase (Interactive with dialogs)
         Container(
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
@@ -830,7 +813,6 @@ class _StatsScreenState extends State<StatsScreen>
               ),
               const SizedBox(height: 16),
 
-              // Badges Grid
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
@@ -905,7 +887,6 @@ class _StatsScreenState extends State<StatsScreen>
 
         const SizedBox(height: 16),
 
-        // 5. Anime Quote of the Day Card
         Container(
           padding: const EdgeInsets.all(18),
           decoration: BoxDecoration(
@@ -994,16 +975,13 @@ class _StatsScreenState extends State<StatsScreen>
     );
   }
 
-  // ==========================================
-  // TAB 2: WEEKLY ANALYTICS & BREAKDOWN
-  // ==========================================
   Widget _buildWeeklyAnalyticsTab(
     BuildContext context, {
     required List<TaskModel> allTasks,
     required List<TaskModel> completedTasks,
     required bool isDark,
   }) {
-    // Compute weekday completion counts (Mon = 1, Sun = 7)
+
     final now = DateTime.now();
     final weekDays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
     final Map<int, int> dayCounts = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0};
@@ -1013,7 +991,6 @@ class _StatsScreenState extends State<StatsScreen>
       dayCounts[day] = (dayCounts[day] ?? 0) + 1;
     }
 
-    // Difficulty breakdown
     int sRank = 0;
     int aRank = 0;
     int bRank = 0;
@@ -1028,7 +1005,6 @@ class _StatsScreenState extends State<StatsScreen>
       }
     }
 
-    // Category counts
     final categories = ['General', 'Study', 'Work', 'Personal', 'Gaming'];
     final categoryIcons = {'General': '🌸', 'Study': '📚', 'Work': '💼', 'Personal': '🍜', 'Gaming': '🎮'};
 
@@ -1036,7 +1012,7 @@ class _StatsScreenState extends State<StatsScreen>
       padding: const EdgeInsets.fromLTRB(18, 14, 18, 110),
       physics: const BouncingScrollPhysics(),
       children: [
-        // 1. Weekly Activity Bar Chart
+
         Container(
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
@@ -1079,7 +1055,6 @@ class _StatsScreenState extends State<StatsScreen>
               ),
               const SizedBox(height: 22),
 
-              // Bar Chart
               SizedBox(
                 height: 180,
                 child: BarChart(
@@ -1210,7 +1185,6 @@ class _StatsScreenState extends State<StatsScreen>
 
         const SizedBox(height: 16),
 
-        // 2. Quest Difficulty (Rank) Distribution
         Container(
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
@@ -1246,7 +1220,6 @@ class _StatsScreenState extends State<StatsScreen>
 
         const SizedBox(height: 16),
 
-        // 3. Category Breakdown with Progress
         Container(
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
@@ -1334,9 +1307,6 @@ class _StatsScreenState extends State<StatsScreen>
     );
   }
 
-  // ==========================================
-  // HELPER WIDGETS
-  // ==========================================
   Widget _buildAttributeBar({
     required String title,
     required String icon,

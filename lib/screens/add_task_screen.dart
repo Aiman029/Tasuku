@@ -153,7 +153,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
           child: ListView(
             padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
             children: [
-              // Quest Title input card
+
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
@@ -216,7 +216,6 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
 
               const SizedBox(height: 16),
 
-              // Quest Checkpoints / Sub-tasks Card
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
@@ -363,7 +362,6 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
 
               const SizedBox(height: 16),
 
-              // Priority / Rank Selection Card
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
@@ -454,7 +452,6 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
 
               const SizedBox(height: 16),
 
-              // Category Selection
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
@@ -540,7 +537,6 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
 
               const SizedBox(height: 16),
 
-              // Date & Reminder Container
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
@@ -588,7 +584,6 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
 
               const SizedBox(height: 28),
 
-              // Glowing Summon Quest Button
               Container(
                 height: 52,
                 decoration: BoxDecoration(

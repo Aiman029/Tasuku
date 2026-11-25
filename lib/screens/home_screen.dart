@@ -9,7 +9,6 @@ import '../widgets/anime_mascot.dart';
 import 'add_task_screen.dart';
 import 'task_detail_screen.dart';
 
-
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -67,11 +66,10 @@ class _HomeScreenState extends State<HomeScreen> {
           bottom: false,
           child: Column(
             children: [
-              // Top Anime Header
+
               _buildAnimeHeader(context, userLevel, expInLevel, completedCount,
                   totalCount, isDark, taskProvider),
 
-              // Expandable Search & Quick Sort Panel
               AnimatedSize(
                 duration: const Duration(milliseconds: 280),
                 curve: Curves.easeInOutCubic,
@@ -80,10 +78,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     : const SizedBox.shrink(),
               ),
 
-              // Filter Chips
               _buildFilterChips(context, taskProvider, isDark),
 
-              // Task List or Anime Empty State
               Expanded(
                 child: tasks.isEmpty
                     ? _buildEmptyState(context, isDark, taskProvider)
@@ -149,7 +145,7 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       child: Column(
         children: [
-          // Row: Greeting & Action Buttons
+
           Row(
             children: [
               Column(
@@ -198,7 +194,6 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               const Spacer(),
 
-              // Search & Filter Toggle Button
               IconButton(
                 tooltip: _isSearchExpanded
                     ? 'Hide Search & Sort'
@@ -243,7 +238,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 },
               ),
 
-              // Petals Toggle Button
               IconButton(
                 tooltip: _sakuraPetalsEnabled
                     ? 'Hide Sakura Petals'
@@ -259,7 +253,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 },
               ),
 
-              // Calendar Button (switches to Calendar tab in floating island)
               IconButton(
                 tooltip: 'Calendar View',
                 icon: const Icon(Icons.calendar_month_outlined),
@@ -267,7 +260,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 onPressed: () => context.read<NavigationProvider>().setIndex(1),
               ),
 
-              // Guild Stats Button (switches to Stats tab in floating island)
               IconButton(
                 tooltip: 'Adventurer Guild Stats',
                 icon: const Icon(Icons.insights_rounded),
@@ -279,7 +271,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
           const SizedBox(height: 14),
 
-          // Anime EXP Status Card
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
             decoration: BoxDecoration(
@@ -403,7 +394,7 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // 1. Search Box
+
           Container(
             height: 44,
             decoration: BoxDecoration(
@@ -451,7 +442,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
           const SizedBox(height: 12),
 
-          // 2. Priority / Rank Filter Chips
           Row(
             children: [
               const Text(
@@ -529,7 +519,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
           const SizedBox(height: 12),
 
-          // 3. Quick Sort Options & Direction Toggle
           Row(
             children: [
               const Text(
@@ -542,7 +531,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
               const Spacer(),
-              // Direction toggle button
+
               GestureDetector(
                 onTap: () => provider.toggleSortDirection(),
                 child: Container(
@@ -628,7 +617,6 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
 
-          // 4. Quick Reset Bar (if any filter or search active)
           if (provider.hasActiveSearchOrFilter) ...[
             const SizedBox(height: 10),
             Container(

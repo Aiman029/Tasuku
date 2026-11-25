@@ -20,7 +20,7 @@ class AnimeLogoCrest extends StatelessWidget {
       child: Stack(
         alignment: Alignment.center,
         children: [
-          // Outer glowing pulsing ring
+
           Container(
             width: size * 0.95,
             height: size * 0.95,
@@ -35,7 +35,7 @@ class AnimeLogoCrest extends StatelessWidget {
               ),
             ),
           ),
-          // Rotating magical crest painter
+
           CustomPaint(
             size: Size(size, size),
             painter: _AnimeCrestPainter(),
@@ -52,7 +52,6 @@ class _AnimeCrestPainter extends CustomPainter {
     final center = Offset(size.width / 2, size.height / 2);
     final radius = size.width * 0.38;
 
-    // Glowing outer circle
     final glowPaint = Paint()
       ..shader = AnimeColors.sakuraGradient.createShader(
         Rect.fromCircle(center: center, radius: radius),
@@ -61,14 +60,12 @@ class _AnimeCrestPainter extends CustomPainter {
       ..strokeWidth = 3.5;
     canvas.drawCircle(center, radius, glowPaint);
 
-    // Inner subtle ring
     final innerPaint = Paint()
       ..color = AnimeColors.starlightGold.withAlpha(180)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1.5;
     canvas.drawCircle(center, radius * 0.78, innerPaint);
 
-    // 5 Sakura Petals radiating from center
     const petals = 5;
     final petalPaint = Paint()
       ..shader = const LinearGradient(
@@ -93,14 +90,12 @@ class _AnimeCrestPainter extends CustomPainter {
 
       canvas.drawPath(petalPath, petalPaint);
 
-      // Gold center star dot
       final goldStarPaint = Paint()..color = AnimeColors.starlightGold;
       canvas.drawCircle(Offset(0, -ph * 0.75), 2.2, goldStarPaint);
 
       canvas.restore();
     }
 
-    // Central glowing core
     final centerCorePaint = Paint()
       ..color = Colors.white
       ..style = PaintingStyle.fill;
@@ -118,7 +113,7 @@ class _AnimeCrestPainter extends CustomPainter {
 
 class AnimeChibiMascot extends StatelessWidget {
   final double size;
-  final String mood; // 'happy', 'quest', 'sleeping'
+  final String mood;
 
   const AnimeChibiMascot({
     super.key,
@@ -149,7 +144,6 @@ class _AnimeChibiCatPainter extends CustomPainter {
     final cy = size.height * 0.55;
     final headRadius = size.width * 0.35;
 
-    // Head Shadow
     final shadowPaint = Paint()
       ..color = Colors.black.withAlpha(25)
       ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 8);
@@ -162,11 +156,9 @@ class _AnimeChibiCatPainter extends CustomPainter {
       shadowPaint,
     );
 
-    // Ears
     final earPaint = Paint()..color = const Color(0xFFFFD1DC);
     final earInnerPaint = Paint()..color = const Color(0xFFFF85A1);
 
-    // Left Ear
     final leftEar = Path()
       ..moveTo(cx - headRadius * 0.8, cy - headRadius * 0.4)
       ..lineTo(cx - headRadius * 0.9, cy - headRadius * 1.15)
@@ -181,7 +173,6 @@ class _AnimeChibiCatPainter extends CustomPainter {
       ..close();
     canvas.drawPath(leftEarInner, earInnerPaint);
 
-    // Right Ear
     final rightEar = Path()
       ..moveTo(cx + headRadius * 0.8, cy - headRadius * 0.4)
       ..lineTo(cx + headRadius * 0.9, cy - headRadius * 1.15)
@@ -196,18 +187,15 @@ class _AnimeChibiCatPainter extends CustomPainter {
       ..close();
     canvas.drawPath(rightEarInner, earInnerPaint);
 
-    // Head (cute round anime face)
     final facePaint = Paint()..color = Colors.white;
     canvas.drawCircle(Offset(cx, cy), headRadius, facePaint);
 
-    // Head outline
     final faceBorder = Paint()
       ..color = const Color(0xFFFFB3C6)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 2.5;
     canvas.drawCircle(Offset(cx, cy), headRadius, faceBorder);
 
-    // Cute Cheeks (Blush)
     final blushPaint = Paint()..color = const Color(0xFFFF7597).withAlpha(120);
     canvas.drawOval(
       Rect.fromCenter(
@@ -226,7 +214,6 @@ class _AnimeChibiCatPainter extends CustomPainter {
       blushPaint,
     );
 
-    // Anime Eyes
     if (mood == 'sleeping') {
       final sleepEye = Paint()
         ..color = const Color(0xFF4A3E56)
@@ -234,7 +221,6 @@ class _AnimeChibiCatPainter extends CustomPainter {
         ..strokeWidth = 3.0
         ..strokeCap = StrokeCap.round;
 
-      // Arc eyes ^  ^
       final leftArc = Path()
         ..moveTo(cx - headRadius * 0.45, cy + headRadius * 0.05)
         ..quadraticBezierTo(
@@ -255,7 +241,7 @@ class _AnimeChibiCatPainter extends CustomPainter {
         );
       canvas.drawPath(rightArc, sleepEye);
     } else {
-      // Big sparkling anime eyes
+
       final eyePaint = Paint()..color = const Color(0xFF2C2248);
       final leftEyeRect = Rect.fromCenter(
         center: Offset(cx - headRadius * 0.32, cy - headRadius * 0.05),
@@ -270,7 +256,6 @@ class _AnimeChibiCatPainter extends CustomPainter {
       canvas.drawOval(leftEyeRect, eyePaint);
       canvas.drawOval(rightEyeRect, eyePaint);
 
-      // Eye reflections (Anime Highlights)
       final highlightPaint = Paint()..color = Colors.white;
       canvas.drawCircle(
         Offset(cx - headRadius * 0.35, cy - headRadius * 0.15),
@@ -295,7 +280,6 @@ class _AnimeChibiCatPainter extends CustomPainter {
       );
     }
 
-    // Tiny Triangle Nose
     final nosePaint = Paint()..color = const Color(0xFFFF5E86);
     final nose = Path()
       ..moveTo(cx, cy + headRadius * 0.12)
@@ -304,7 +288,6 @@ class _AnimeChibiCatPainter extends CustomPainter {
       ..close();
     canvas.drawPath(nose, nosePaint);
 
-    // Mouth :3
     final mouthPaint = Paint()
       ..color = const Color(0xFF5A496A)
       ..style = PaintingStyle.stroke
@@ -317,7 +300,6 @@ class _AnimeChibiCatPainter extends CustomPainter {
       ..quadraticBezierTo(cx + 4, cy + headRadius * 0.27, cx + 8, cy + headRadius * 0.2);
     canvas.drawPath(mouth, mouthPaint);
 
-    // Sakura flower on forehead / hair clip
     final flowerPaint = Paint()..color = const Color(0xFFFF5E86);
     final flowerCenter = Offset(cx + headRadius * 0.6, cy - headRadius * 0.6);
     for (int i = 0; i < 5; i++) {

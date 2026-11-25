@@ -128,7 +128,6 @@ class _Petal {
     x += speedX + math.sin(tick * swayFreq + swayOffset) * 0.0015;
     rotation += rotationSpeed;
 
-    // Reset when off bottom or edges
     if (y > 1.1) {
       y = -0.05;
       x = math.Random().nextDouble();
@@ -157,7 +156,6 @@ class _SakuraPainter extends CustomPainter {
       canvas.translate(px, py);
       canvas.rotate(petal.rotation);
 
-      // Draw cute sakura petal shape
       final path = Path();
       final w = petal.size;
       final h = petal.size * 1.5;
@@ -167,7 +165,6 @@ class _SakuraPainter extends CustomPainter {
       path.cubicTo(-w / 2, h / 3, -w / 2, -h / 3, 0, -h / 2);
       path.close();
 
-      // Center notch characteristic of cherry blossom petal
       final notchPath = Path();
       notchPath.moveTo(-w * 0.15, -h * 0.48);
       notchPath.lineTo(0, -h * 0.38);
@@ -175,7 +172,6 @@ class _SakuraPainter extends CustomPainter {
 
       canvas.drawPath(path, paint);
 
-      // Subtle inner petal vein
       final veinPaint = Paint()
         ..color = const Color(0xFFFFB3C6).withAlpha((petal.opacity * 200).round())
         ..style = PaintingStyle.stroke

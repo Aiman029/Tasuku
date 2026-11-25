@@ -3,7 +3,7 @@ import 'package:flutter/foundation.dart';
 class CalendarProvider extends ChangeNotifier {
   DateTime _focusedDay = DateTime.now();
   DateTime _selectedDay = DateTime.now();
-  String _calendarFormat = 'month'; // "month", "week", "2weeks"
+  String _calendarFormat = 'month';
 
   DateTime get focusedDay => _focusedDay;
   DateTime get selectedDay => _selectedDay;

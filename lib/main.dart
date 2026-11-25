@@ -13,8 +13,8 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await Hive.initFlutter();
-  await DatabaseService.init(); // register adapter + open box
-  await NotificationService().init(); // setup notification channel + permission
+  await DatabaseService.init();
+  await NotificationService().init();
 
   runApp(const MyApp());
 }

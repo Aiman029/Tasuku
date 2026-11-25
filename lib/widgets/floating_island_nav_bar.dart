@@ -175,7 +175,7 @@ class _NavBarItem extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // Icon with animated scale and badges
+
               Stack(
                 clipBehavior: Clip.none,
                 alignment: Alignment.center,
@@ -203,7 +203,6 @@ class _NavBarItem extends StatelessWidget {
                     },
                   ),
 
-                  // Numeric Badge (e.g. pending quests count)
                   if (badgeText != null)
                     Positioned(
                       top: -6,
@@ -234,7 +233,6 @@ class _NavBarItem extends StatelessWidget {
                       ),
                     ),
 
-                  // Pulsing Indicator (e.g. active timer)
                   if (hasPulseBadge)
                     Positioned(
                       top: -3,
@@ -245,7 +243,6 @@ class _NavBarItem extends StatelessWidget {
               ),
               const SizedBox(height: 3),
 
-              // Animated Text & Micro Subtitle
               AnimatedDefaultTextStyle(
                 duration: const Duration(milliseconds: 220),
                 curve: Curves.easeInOut,
@@ -266,7 +263,6 @@ class _NavBarItem extends StatelessWidget {
                 ),
               ),
 
-              // Japanese anime micro-subtitle
               if (isSelected)
                 Padding(
                   padding: const EdgeInsets.only(top: 1),

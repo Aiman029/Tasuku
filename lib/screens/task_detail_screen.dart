@@ -117,7 +117,7 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
           physics: const BouncingScrollPhysics(),
           children: [
-            // Quest Title & Rank Header Card
+
             Container(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
@@ -224,7 +224,6 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
 
             const SizedBox(height: 16),
 
-            // Checkpoints / Sub-tasks Card
             Container(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
@@ -298,7 +297,6 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
                     ],
                   ),
 
-                  // Progress Bar for Checkpoints
                   if (totalSubtasks > 0) ...[
                     const SizedBox(height: 10),
                     ClipRRect(
@@ -316,7 +314,6 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
                     ),
                   ],
 
-                  // Inline Input for Adding Checkpoint
                   if (_isAddingCheckpoint) ...[
                     const SizedBox(height: 14),
                     Row(
@@ -352,7 +349,6 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
 
                   const SizedBox(height: 12),
 
-                  // Checkpoints List
                   if (subtasks.isEmpty)
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8),
@@ -437,7 +433,6 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
 
             const SizedBox(height: 16),
 
-            // Description / Briefing Card
             if (current.description.isNotEmpty) ...[
               Container(
                 padding: const EdgeInsets.all(20),
@@ -481,7 +476,6 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
               const SizedBox(height: 16),
             ],
 
-            // Schedule & Timing Card
             Container(
               padding: const EdgeInsets.all(18),
               decoration: BoxDecoration(
@@ -560,7 +554,6 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
 
             const SizedBox(height: 28),
 
-            // Mark as Cleared / Pending Action Button
             Container(
               height: 52,
               decoration: BoxDecoration(

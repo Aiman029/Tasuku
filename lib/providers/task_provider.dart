@@ -17,10 +17,10 @@ class TaskProvider extends ChangeNotifier {
   final Uuid _uuid = const Uuid();
 
   List<TaskModel> _tasks = [];
-  String _filterStatus = 'All'; // "All", "Completed", "Pending"
+  String _filterStatus = 'All';
   String _filterCategory = 'All';
   String _searchQuery = '';
-  String _filterPriority = 'All'; // "All", "High", "Medium", "Low"
+  String _filterPriority = 'All';
   TaskSortOption _sortBy = TaskSortOption.dueDate;
   bool _sortAscending = true;
 
@@ -41,10 +41,9 @@ class TaskProvider extends ChangeNotifier {
       _sortBy != TaskSortOption.dueDate ||
       !_sortAscending;
 
-  // Panggil sekali masa app start (contoh: initState di home_screen)
   void loadTasks() {
     _tasks = _dbService.getAllTasks();
-    // Sort ikut dueDate terdekat dulu
+
     _tasks.sort((a, b) => a.dueDate.compareTo(b.dueDate));
     notifyListeners();
   }
@@ -52,25 +51,21 @@ class TaskProvider extends ChangeNotifier {
   List<TaskModel> _filteredTasks() {
     var result = List<TaskModel>.from(_tasks);
 
-    // 1. Status Filter
     if (_filterStatus == 'Completed') {
       result = result.where((t) => t.isDone).toList();
     } else if (_filterStatus == 'Pending') {
       result = result.where((t) => !t.isDone).toList();
     }
 
-    // 2. Category Filter
     if (_filterCategory != 'All') {
       result = result.where((t) => t.category == _filterCategory).toList();
     }
 
-    // 3. Priority / Rank Filter
     if (_filterPriority != 'All') {
       result = result.where((t) =>
           t.priority.toLowerCase() == _filterPriority.toLowerCase()).toList();
     }
 
-    // 4. Keyword Search Filter (Title, description, category, subtask items)
     if (_searchQuery.trim().isNotEmpty) {
       final q = _searchQuery.trim().toLowerCase();
       result = result.where((t) {
@@ -83,7 +78,6 @@ class TaskProvider extends ChangeNotifier {
       }).toList();
     }
 
-    // 5. Sorting
     result.sort((a, b) {
       int cmp = 0;
       switch (_sortBy) {
@@ -109,14 +103,14 @@ class TaskProvider extends ChangeNotifier {
                 return 0;
             }
           }
-          // Default ascending for priority means S-Rank (Highest) first
+
           cmp = weight(b.priority).compareTo(weight(a.priority));
           break;
         case TaskSortOption.title:
           cmp = a.title.toLowerCase().compareTo(b.title.toLowerCase());
           break;
         case TaskSortOption.createdAt:
-          // Default ascending for created at means newest first
+
           cmp = b.createdAt.compareTo(a.createdAt);
           break;
       }
@@ -171,7 +165,6 @@ class TaskProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  // CREATE
   Future<void> addTask({
     required String title,
     String description = '',
@@ -200,7 +193,6 @@ class TaskProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  // SUBTASKS / CHECKPOINTS
   Future<void> addSubTask(String taskId, String title) async {
     final index = _tasks.indexWhere((t) => t.id == taskId);
     if (index != -1) {
@@ -224,7 +216,6 @@ class TaskProvider extends ChangeNotifier {
             .copyWith(isDone: !currentList[subIndex].isDone);
         task.subtasks = currentList;
 
-        // If all subtasks are done, mark main task as done too!
         if (currentList.isNotEmpty && currentList.every((s) => s.isDone)) {
           task.isDone = true;
           await _notificationService.cancelReminder(taskId);
@@ -248,11 +239,9 @@ class TaskProvider extends ChangeNotifier {
     }
   }
 
-  // UPDATE
   Future<void> updateTask(TaskModel task) async {
     await _dbService.updateTask(task);
 
-    // Reset reminder lama, schedule yang baru (kalau reminderTime berubah)
     await _notificationService.cancelReminder(task.id);
     await _notificationService.scheduleReminder(task);
 
@@ -263,7 +252,6 @@ class TaskProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  // Toggle checklist
   Future<void> toggleTaskStatus(String id) async {
     await _dbService.toggleTaskStatus(id);
 
@@ -271,7 +259,6 @@ class TaskProvider extends ChangeNotifier {
     if (index != -1) {
       _tasks[index] = _tasks[index].copyWith(isDone: !_tasks[index].isDone);
 
-      // Kalau task siap, cancel reminder (tak perlu notify lagi)
       if (_tasks[index].isDone) {
         await _notificationService.cancelReminder(id);
       }
@@ -279,7 +266,6 @@ class TaskProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  // DELETE
   Future<void> deleteTask(String id) async {
     await _dbService.deleteTask(id);
     await _notificationService.cancelReminder(id);
@@ -288,7 +274,6 @@ class TaskProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  // Untuk calendar_screen — ambil task ikut tarikh dipilih
   List<TaskModel> getTasksForDate(DateTime date) {
     return _tasks.where((task) {
       return task.dueDate.year == date.year &&
@@ -297,7 +282,6 @@ class TaskProvider extends ChangeNotifier {
     }).toList();
   }
 
-  // Untuk stats_screen — tracking progress
   int get completedCount => _tasks.where((t) => t.isDone).length;
   int get pendingCount => _tasks.where((t) => !t.isDone).length;
   double get completionRate =>

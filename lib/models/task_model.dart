@@ -53,16 +53,16 @@ class TaskModel extends HiveObject {
   DateTime dueDate;
 
   @HiveField(4)
-  DateTime? reminderTime; // masa notification akan fire
+  DateTime? reminderTime;
 
   @HiveField(5)
   bool isDone;
 
   @HiveField(6)
-  String priority; // "Low", "Medium", "High"
+  String priority;
 
   @HiveField(7)
-  String category; // contoh: "Study", "Work", "Personal"
+  String category;
 
   @HiveField(8)
   DateTime createdAt;
@@ -109,7 +109,6 @@ class TaskModel extends HiveObject {
   double get subtaskProgress =>
       totalSubtasks == 0 ? 0.0 : completedSubtasks / totalSubtasks;
 
-  // Untuk toggle checklist / update sikit tanpa buat object baru penuh
   TaskModel copyWith({
     String? title,
     String? description,

@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 
 class AnimeColors {
-  // Sakura & Pastel Anime Palette
+
   static const Color sakuraPink = Color(0xFFFF5E86);
   static const Color sakuraLight = Color(0xFFFFEFF3);
   static const Color sakuraDark = Color(0xFFD6336C);
   static const Color sakuraSubtle = Color(0xFFFFF0F4);
 
-  // Mystic & Cyber Accents
   static const Color animeViolet = Color(0xFF845EC2);
   static const Color animeLavender = Color(0xFFC7B1E6);
   static const Color electricCyan = Color(0xFF00C9A7);
@@ -15,25 +14,21 @@ class AnimeColors {
   static const Color sunsetCoral = Color(0xFFFF9671);
   static const Color flameCrimson = Color(0xFFFF4D6D);
 
-  // Backgrounds & Surfaces
   static const Color bgLight = Color(0xFFFAF7FB);
   static const Color cardLight = Colors.white;
   static const Color textMainLight = Color(0xFF2A2035);
   static const Color textSubLight = Color(0xFF7D7289);
 
-  // Dark Mode (Midnight Anime / Cyberpunk Night)
   static const Color bgDark = Color(0xFF13111C);
   static const Color cardDark = Color(0xFF1F1B2E);
   static const Color cardDarkSurface = Color(0xFF28233C);
   static const Color textMainDark = Color(0xFFF7F5FA);
   static const Color textSubDark = Color(0xFFA59EB5);
 
-  // Rank Colors
-  static const Color rankS = Color(0xFFFF3366); // S-Rank: Flaming Crimson
-  static const Color rankA = Color(0xFFFF9E00); // A-Rank: Thunder Amber
-  static const Color rankB = Color(0xFF00C49F); // B-Rank: Wind Emerald
+  static const Color rankS = Color(0xFFFF3366);
+  static const Color rankA = Color(0xFFFF9E00);
+  static const Color rankB = Color(0xFF00C49F);
 
-  // Gradients
   static const LinearGradient sakuraGradient = LinearGradient(
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,

@@ -67,7 +67,7 @@ class CalendarScreen extends StatelessWidget {
         petalCount: 14,
         child: Column(
           children: [
-            // Calendar Card
+
             Container(
               margin: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
               padding: const EdgeInsets.only(bottom: 8),
@@ -142,7 +142,6 @@ class CalendarScreen extends StatelessWidget {
               ),
             ),
 
-            // Section Header: Tasks on selected day
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
               child: Row(
@@ -179,7 +178,6 @@ class CalendarScreen extends StatelessWidget {
               ),
             ),
 
-            // Task list for day or empty
             Expanded(
               child: tasksForSelectedDay.isEmpty
                   ? Center(
